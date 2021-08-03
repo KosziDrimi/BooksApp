@@ -1,0 +1,10 @@
+.env
+*.exe
+*.pyc
+*.pyo
+env/
+env*
+.coverage
+*cov/
+
+

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <title>SHOW</title>
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <a href = "{% url 'index' %}" class="btn btn-warning">Strona główna</a><br>
+      <br>
+      <h4>Lista wyszukanych książek:</h4>
+      <br>
+      <table class='table table-sm' style="max-width: 100rem;">
+        <tr align="center" class="table-warning">
+          <th> Tytuł </th>
+          <th> Autor </th>
+          <th> Data publikacji </th>
+          <th> Numer ISBN </th>
+          <th> Liczba stron </th>
+          <th> Link do okładki </th>
+          <th> Język publikacji </th>
+          <th> Edycja </th>
+          <th> Usuń pozycję </th>
+        </tr>
+
+        {% for book in books %}
+          <tr align="center">
+            <td>{{ book.tytuł }}</td>
+            <td>{{ book.autor }}</td>
+            <td>{{ book.data_publikacji|date:"d/m/Y" }}</td>
+            <td>{{ book.numer_isbn }}</td>
+            <td>{{ book.liczba_stron }}</td>
+            <td><a href = "{{ book.link_do_okładki }}">{{ book.link_do_okładki }}</a></td>
+            <td>{{ book.język_publikacji }}</td>
+            <td><a href = "{% url 'update' book.id %}" class="btn btn-warning">Edytuj</a><td>
+            <td><a href = "{% url 'delete' book.id %}" class="btn btn-danger">Usuń</a><td>
+          </tr>
+        {% endfor %}
+
+      </table>
+
+    </div>
+
+  </body>
+</html>
