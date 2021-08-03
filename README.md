@@ -31,4 +31,6 @@ In order to see this project you should:
 
 The application is also deployed to Heroku: https://koszidrimi-booksapp.herokuapp.com/.
 
+There are also some unit tests set up for this project (testing model, urls, views & form). To run them use the `python manage.py test` command.
+
 Technologies: Python 3.8.3, Django 3.2.6, HTML5, Bootstrap 5.0.
