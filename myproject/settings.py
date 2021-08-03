@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-l+1dews(2u0r@(4na6rvk037&h)+5$26#)sf@nc-$i@c$@klnx
 API_KEY = 'AIzaSyCk79W0iQgjw4w28coCXsRw5P8j860qDw4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['koszidrimi-booksapp.herokuapp.com', 'localhost', '127.0.0.1']
 
@@ -82,12 +82,8 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dftkrc8fjis9a4',
-        'HOST': 'ec2-54-205-232-84.compute-1.amazonaws.com',
-        'PORT': 5432,
-        'USER': 'arcyhepmlkwgpc',
-        'PASSWORD': '210263ca56007925400c410dbb3f56753d26a47e585efb3c4e2beba2623ea1aa',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
