@@ -1,1 +1,1 @@
-web: waitress-serve --port=127.0.0.1:8000 myproject.wsgi:application
+web: gunicorn myproject.wsgi
