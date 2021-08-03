@@ -28,7 +28,7 @@ API_KEY = 'AIzaSyCk79W0iQgjw4w28coCXsRw5P8j860qDw4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['koszidrimi-booksapp.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['koszidrimi-booksapp.herokuapp.com']
 
 
 # Application definition
