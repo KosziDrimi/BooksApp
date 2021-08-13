@@ -14,8 +14,9 @@ def is_digit(char):
     return char.isdigit()
 
 
-def is_alpha(char):
-    return char.isalpha() or ' ' in char
+def is_alpha_or_space(char):
+    chars = [True for c in char if c.isalpha() or c.isspace()]
+    return len(chars) == len(char)
 
 
 class BookForm(forms.ModelForm):
@@ -26,7 +27,7 @@ class BookForm(forms.ModelForm):
     def clean_tytuł(self):
         data = self.cleaned_data.get('tytuł')
 
-        if not is_alpha(data):
+        if not is_alpha_or_space(data):
             raise forms.ValidationError('Tytuł musi składać się wyłącznie '
                                         'z liter oraz spacji.')
 
@@ -35,7 +36,7 @@ class BookForm(forms.ModelForm):
     def clean_autor(self):
         data = self.cleaned_data.get('autor')
 
-        if not is_alpha(data):
+        if not is_alpha_or_space(data):
             raise forms.ValidationError('Pole "autor" musi składać się '
                                         'wyłącznie z liter oraz spacji.')
 
@@ -62,7 +63,7 @@ class BookForm(forms.ModelForm):
     def clean_język_publikacji(self):
         data = self.cleaned_data.get('język_publikacji')
 
-        if not is_alpha(data):
+        if not is_alpha_or_space(data):
             raise forms.ValidationError('Pole "język" musi składać się '
                                         'wyłącznie z liter.')
 
