@@ -3,7 +3,7 @@ from .models import Book
 
 
 def is_positive(num):
-    return num > 0
+    return num != 0
 
 
 def is_10_or_13(char):
