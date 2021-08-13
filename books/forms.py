@@ -70,17 +70,5 @@ class BookForm(forms.ModelForm):
         return data
 
 
-class DateInput(forms.DateInput):
-    input_type = 'date'
-
-
-class FilterForm(forms.Form):
-    tytuł = forms.CharField(required=False)
-    autor = forms.CharField(required=False)
-    język_publikacji = forms.CharField(required=False)
-    data_początkowa = forms.DateField(widget=DateInput(), required=False)
-    data_końcowa = forms.DateField(widget=DateInput(), required=False)
-
-
 class APIForm(forms.Form):
     słowo_kluczowe = forms.CharField(max_length=50)
