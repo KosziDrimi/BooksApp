@@ -13,8 +13,18 @@
 
       <a href = "{% url 'index' %}" class="btn btn-warning">Strona główna</a><br>
       <br>
-      <h4>Lista wyszukanych książek:</h4>
+      <h4>Wyszukaj książki:</h4>
       <br>
+      <form action = "" method = "GET">
+        <table class='table' style="max-width: 30rem;">
+          {{ filter.form.as_table }}
+        </table>
+        <button type="submit" class="btn btn-warning">Wyszukaj</button>
+      </form>
+      <br>
+      <h4>Lista wyszukanych książek ({{ filter.qs.count }}):</h4>
+      <br>
+      {% if filter %}
       <table class='table table-sm' style="max-width: 100rem;">
         <tr align="center" class="table-warning">
           <th> Tytuł </th>
@@ -28,21 +38,39 @@
           <th> Usuń pozycję </th>
         </tr>
 
-        {% for book in books %}
+        {% for book in book_list %}
           <tr align="center">
             <td>{{ book.tytuł }}</td>
             <td>{{ book.autor }}</td>
             <td>{{ book.data_publikacji|date:"d/m/Y" }}</td>
             <td>{{ book.numer_isbn }}</td>
             <td>{{ book.liczba_stron }}</td>
-            <td><a href = "{{ book.link_do_okładki }}">{{ book.link_do_okładki }}</a></td>
+            <td><a href = "{{ book.link_do_okładki }}">Link</a></td>
             <td>{{ book.język_publikacji }}</td>
             <td><a href = "{% url 'update' book.id %}" class="btn btn-warning">Edytuj</a><td>
             <td><a href = "{% url 'delete' book.id %}" class="btn btn-danger">Usuń</a><td>
           </tr>
         {% endfor %}
-
       </table>
+      {% endif %}
+
+      {% if is_paginated %}
+      <div class="pagination justify-content-center my-5">
+        <span class="page-links">
+            {% if page_obj.has_previous %}
+              <a href="{% url 'show' %}?page={{ page_obj.previous_page_number }}">Poprzednia strona</a>
+            {% endif %}
+            <span class="page-current">
+            Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+              <a href="{% url 'show' %}?page={{ page_obj.next_page_number }}">Następna strona</a>
+            {% endif %}
+        </span>
+      </div>
+      {% endif %}
+
+
 
     </div>
 

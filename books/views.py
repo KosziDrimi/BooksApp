@@ -1,73 +1,49 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from rest_framework import viewsets
+from django_filters.views import FilterView
 from django_filters.rest_framework import DjangoFilterBackend
 import requests
 from datetime import datetime
 
+
 from .models import Book
-from .forms import BookForm, FilterForm, APIForm
+from .forms import BookForm, APIForm
+from .filters import BookFilter
 from .serializers import BookSerializer
 from myproject.settings import API_KEY
 
 
 class BookList(ListView):
     model = Book
+    paginate_by = 10
 
 
+class SearchResultView(FilterView):
+    model = Book
+    context_object_name = 'book_list'
+    template_name = 'books/show.html'
+    filterset_class = BookFilter
+    paginate_by = 5
+
+                        
 class BookView(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ('tytuł', 'autor', 'język_publikacji',
-                        'data_publikacji')
+    filterset_fields = ('tytuł', 'autor', 'język_publikacji', 'data_publikacji')
 
 
 def index(request):
     return render(request, 'books/index.html')
 
 
-def show(request):
-
-    if request.method == 'POST':
-        form = FilterForm(request.POST)
-
-        if form.is_valid():
-            tytuł = form.cleaned_data['tytuł']
-            autor = form.cleaned_data['autor']
-            język_publikacji = form.cleaned_data['język_publikacji']
-            data_początkowa = form.cleaned_data['data_początkowa']
-            data_końcowa = form.cleaned_data['data_końcowa']
-
-            if tytuł:
-                books = Book.objects.filter(tytuł__icontains=tytuł)
-            if autor:
-                books = Book.objects.filter(autor__icontains=autor)
-            if język_publikacji:
-                books = Book.objects.filter(
-                    język_publikacji__iexact=język_publikacji)
-            if data_początkowa and data_końcowa:
-                books = Book.objects.filter(
-                    data_publikacji__range=[data_początkowa, data_końcowa])
-
-            context = {'books': books}
-            return render(request, 'books/show.html', context)
-
-    else:
-        form = FilterForm()
-
-    context = {'form': form}
-    return render(request, 'books/show_form.html', context)
-
-
 def add(request):
-
     if request.method == 'POST':
         form = BookForm(request.POST)
 
         if form.is_valid():
             form.save()
-
             return redirect('list')
 
     else:
@@ -78,7 +54,6 @@ def add(request):
 
 
 def update(request, pk):
-
     book = Book.objects.get(id=pk)
     form = BookForm(instance=book)
 
@@ -87,7 +62,6 @@ def update(request, pk):
 
         if form.is_valid():
             form.save()
-
             return redirect('list')
 
     context = {'form': form}
@@ -95,7 +69,6 @@ def update(request, pk):
 
 
 def delete(request, pk):
-
     book = Book.objects.get(id=pk)
     if request.method == 'POST':
         book.delete()
@@ -106,7 +79,6 @@ def delete(request, pk):
 
 
 def api_import(request):
-
     url = 'https://www.googleapis.com/books/v1/volumes?q={}&key={}'
     api_key = API_KEY
 

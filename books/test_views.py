@@ -28,7 +28,7 @@ class TestViews(TestCase):
         url = reverse('show')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'books/show_form.html')
+        self.assertTemplateUsed(response, 'books/show.html')
 
     def test_show_view_POST(self):
         url = reverse('show')

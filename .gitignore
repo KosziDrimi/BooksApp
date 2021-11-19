@@ -6,5 +6,7 @@ env/
 env*
 .coverage
 *cov/
+db.sqlite3
+.idea/
 
 
