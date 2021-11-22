@@ -10,9 +10,20 @@
   <body>
 
     <div class="container">
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <a href = "{% url 'index' %}" class="btn btn-warning">Strona główna</a>
+        </div>
+        <div class="col-md-4">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible py-2 text-end" role="alert">
+                <span class="fst-italic">{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+      </div>
 
-      <a href = "{% url 'index' %}" class="btn btn-warning">Strona główna</a><br>
-      <br>
+
       <h4>Lista książek ({{ page_obj.paginator.count }}):</h4>
       <br>
       <table class="table table-sm" style="max-width: 100rem;">

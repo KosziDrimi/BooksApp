@@ -3,6 +3,8 @@ from django.views.generic import ListView
 from rest_framework import viewsets
 from django_filters.views import FilterView
 from django_filters.rest_framework import DjangoFilterBackend
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib import messages
 import requests
 from datetime import datetime
 
@@ -43,7 +45,13 @@ def add(request):
         form = BookForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            isbn = form.cleaned_data['numer_isbn']
+            try:
+                Book.objects.filter(numer_isbn=isbn).get()
+                messages.warning(request, "Pozycja o tym numerze ISBN już widnieje w bazie.")
+            except ObjectDoesNotExist:
+                form.save()
+
             return redirect('list')
 
     else:
