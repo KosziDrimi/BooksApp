@@ -2,10 +2,6 @@ from django import forms
 from .models import Book
 
 
-def is_positive(num):
-    return num != 0
-
-
 def is_10_or_13(char):
     return len(char) == 10 or len(char) == 13
 
@@ -48,15 +44,6 @@ class BookForm(forms.ModelForm):
         if not is_10_or_13(data) or not is_digit(data):
             raise forms.ValidationError('Numer musi składać się z 10 lub 13 '
                                         'cyfr.')
-
-        return data
-
-    def clean_liczba_stron(self):
-        data = self.cleaned_data.get('liczba_stron')
-
-        if not is_positive(data):
-            raise forms.ValidationError('Liczba stron musi być wartością '
-                                        'dodatnią.')
 
         return data
 

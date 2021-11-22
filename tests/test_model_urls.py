@@ -1,8 +1,8 @@
 from django.test import TestCase, SimpleTestCase
 from django.urls import reverse, resolve
 
-from .views import index, add, show
-from .models import Book
+from books.views import index, add, SearchResultView
+from books.models import Book
 
 
 class TestIndexURL(SimpleTestCase):
@@ -24,7 +24,7 @@ class TestURLs(SimpleTestCase):
 
     def test_show_url_resolves(self):
         url = reverse('show')
-        self.assertEqual(resolve(url).func, show)
+        self.assertEqual(resolve(url).func.__name__, SearchResultView.as_view().__name__)
 
 
 class TestModel(TestCase):

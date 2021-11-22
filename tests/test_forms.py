@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from .models import Book
-from .forms import BookForm
+from books.models import Book
+from books.forms import BookForm
 
 
 class TestBookForm(TestCase):
@@ -64,7 +64,7 @@ class TestBookForm(TestCase):
                                     ['Pole "autor" musi składać się wyłącznie '
                                      'z liter oraz spacji.'])
 
-    def test_invalid_book_form_isbn_lenght(self):
+    def test_invalid_book_form_isbn_length(self):
         book = Book.objects.create(tytuł='Test Title', autor='Test Author',
                                    data_publikacji='2010-01-01',
                                    numer_isbn='1234567',
@@ -104,25 +104,6 @@ class TestBookForm(TestCase):
                                     ['Numer musi składać się z 10 lub 13 '
                                      'cyfr.'])
 
-    def test_invalid_book_form_negative_pages(self):
-        book = Book.objects.create(tytuł='Test Title', autor='Test Author',
-                                   data_publikacji='2010-01-01',
-                                   numer_isbn='1234567890',
-                                   liczba_stron=-111, język_publikacji='pl',
-                                   link_do_okładki='https://www.google.com/')
-
-        data = {'tytuł': book.tytuł, 'autor': book.autor,
-                'data_publikacji': book.data_publikacji,
-                'numer_isbn': book.numer_isbn,
-                'liczba_stron': book.liczba_stron,
-                'link_do_okładki': book.link_do_okładki,
-                'język_publikacji': book.język_publikacji}
-
-        form = BookForm(data=data)
-        self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['liczba_stron'],
-                                    ['Liczba stron musi być wartością '
-                                     'dodatnią.'])
 
     def test_invalid_book_form_language(self):
         book = Book.objects.create(tytuł='Test Title', autor='Test Author',

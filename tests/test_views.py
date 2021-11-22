@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Book
+from books.models import Book
 
 
 class TestViews(TestCase):
@@ -30,19 +30,6 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'books/show.html')
 
-    def test_show_view_POST(self):
-        url = reverse('show')
-        Book.objects.create(tytuł='Test Title', autor='Test Author',
-                            data_publikacji='2010-01-01',
-                            numer_isbn='1234567890',
-                            liczba_stron=111, język_publikacji='pl',
-                            link_do_okładki='https://www.google.com/')
-        data = {'tytuł': 'Title', 'autor': 'Author', 'język_publikacji': 'pl',
-                'data_początkowa': '2009-08-09', 'data_końcowa': '2010-02-28'}
-        response = self.client.post(url, data=data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.request.get('PATH_INFO'), '/show/')
-        self.assertTemplateUsed(response, 'books/show.html')
 
     def test_delete_view_GET(self):
         Book.objects.create(tytuł='Test Title', autor='Test Author',
