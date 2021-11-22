@@ -9,8 +9,8 @@ import requests
 from datetime import datetime
 
 
-from .models import Book
-from .forms import BookForm, APIForm
+from .models import Autor, Book
+from .forms import AutorForm, BookForm, APIForm
 from .filters import BookFilter
 from .serializers import BookSerializer
 from myproject.settings import API_KEY
@@ -42,22 +42,33 @@ def index(request):
 
 def add(request):
     if request.method == 'POST':
-        form = BookForm(request.POST)
+        autor_form = AutorForm(request.POST)
+        book_form = BookForm(request.POST)
 
-        if form.is_valid():
-            isbn = form.cleaned_data['numer_isbn']
+        if autor_form.is_valid() and book_form.is_valid():
+            autor = autor_form.cleaned_data['nazwisko']
             try:
-                Book.objects.filter(numer_isbn=isbn).get()
+                nazwisko = Autor.objects.filter(nazwisko__iexact=autor).get()
+            except ObjectDoesNotExist:
+                autor_form.save()
+                nazwisko = Autor.objects.last()
+
+            data = book_form.cleaned_data
+            data['autor'] = nazwisko
+            try:
+                Book.objects.filter(numer_isbn=data['numer_isbn']).get()
                 messages.warning(request, "Pozycja o tym numerze ISBN już widnieje w bazie.")
             except ObjectDoesNotExist:
-                form.save()
+                book = Book(**data)
+                book.save()
 
             return redirect('list')
 
     else:
-        form = BookForm()
+        autor_form = AutorForm()
+        book_form = BookForm()
 
-    context = {'form': form}
+    context = {'autor_form': autor_form, 'book_form': book_form}
     return render(request, 'books/add_form.html', context)
 
 

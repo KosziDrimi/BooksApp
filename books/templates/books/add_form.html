@@ -18,7 +18,8 @@
       <form action = "" method = "POST">
         {% csrf_token %}
         <table class='table' style="max-width: 40rem;">
-          {{ form.as_table }}
+          {{ autor_form.as_table }}
+          {{ book_form.as_table }}
         </table>
         <button type="submit" class="btn btn-warning">Dodaj / Modyfikuj</button>
       </form>

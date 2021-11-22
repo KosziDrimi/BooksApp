@@ -1,5 +1,5 @@
 from django import forms
-from .models import Book
+from .models import Autor, Book
 
 
 def is_10_or_13(char):
@@ -15,10 +15,25 @@ def is_alpha_or_space(char):
     return len(chars) == len(char)
 
 
+class AutorForm(forms.ModelForm):
+    class Meta:
+        model = Autor
+        fields = '__all__'
+
+    def clean_nazwisko(self):
+        data = self.cleaned_data.get('nazwisko')
+
+        if not is_alpha_or_space(data):
+            raise forms.ValidationError('Pole "autor" musi składać się '
+                                        'wyłącznie z liter oraz spacji.')
+
+        return data
+
+
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
-        fields = '__all__'
+        exclude = ['autor']
 
     def clean_tytuł(self):
         data = self.cleaned_data.get('tytuł')
@@ -29,14 +44,6 @@ class BookForm(forms.ModelForm):
 
         return data
 
-    def clean_autor(self):
-        data = self.cleaned_data.get('autor')
-
-        if not is_alpha_or_space(data):
-            raise forms.ValidationError('Pole "autor" musi składać się '
-                                        'wyłącznie z liter oraz spacji.')
-
-        return data
 
     def clean_numer_isbn(self):
         data = self.cleaned_data.get('numer_isbn')
