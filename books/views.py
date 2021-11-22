@@ -89,12 +89,8 @@ def update(request, pk):
 
 def delete(request, pk):
     book = Book.objects.get(id=pk)
-    if request.method == 'POST':
-        book.delete()
-        return redirect('list')
-
-    context = {'book': book}
-    return render(request, 'books/delete.html', context)
+    book.delete()
+    return redirect('list')
 
 
 def api_import(request):
