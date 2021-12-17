@@ -80,11 +80,12 @@ def update(request, pk):
     form = BookForm(instance=book)
 
     if request.method == 'POST':
-        autor_form = AutorForm(request.POST)
+        autor_form = AutorForm(request.POST, instance=book.autor)
         form = BookForm(request.POST, instance=book)
 
-        if form.is_valid():
+        if form.is_valid() or autor_form.is_valid():
             form.save()
+            autor_form.save()
             return redirect('list')
 
     context = {'book_form': form, 'autor_form': autor_form}
