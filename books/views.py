@@ -8,7 +8,6 @@ from django.contrib import messages
 import requests
 from datetime import datetime
 
-
 from .models import Autor, Book
 from .forms import AutorForm, BookForm, APIForm
 from .filters import BookFilter
@@ -18,17 +17,20 @@ from myproject.settings import API_KEY
 
 class BookList(ListView):
     model = Book
+    context_object_name = 'book_list'
+    ordering = ['-id']
     paginate_by = 10
 
 
-class SearchResultView(FilterView):
+class BookFilterView(FilterView):
     model = Book
     context_object_name = 'book_list'
-    template_name = 'books/show.html'
+    template_name = 'books/book_filter.html'
+    ordering = ['-id']
     filterset_class = BookFilter
     paginate_by = 5
 
-                        
+
 class BookView(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -74,16 +76,18 @@ def add(request):
 
 def update(request, pk):
     book = Book.objects.get(id=pk)
+    autor_form = AutorForm(instance=book.autor)
     form = BookForm(instance=book)
 
     if request.method == 'POST':
+        autor_form = AutorForm(request.POST)
         form = BookForm(request.POST, instance=book)
 
         if form.is_valid():
             form.save()
             return redirect('list')
 
-    context = {'form': form}
+    context = {'book_form': form, 'autor_form': autor_form}
     return render(request, 'books/add_form.html', context)
 
 

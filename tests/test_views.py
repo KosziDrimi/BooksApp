@@ -28,8 +28,7 @@ class TestViews(TestCase):
         url = reverse('show')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'books/show.html')
-
+        self.assertTemplateUsed(response, 'books/book_filter.html')
 
     def test_delete_view_GET(self):
         Book.objects.create(tytuł='Test Title', autor='Test Author',

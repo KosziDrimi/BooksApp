@@ -1,0 +1,52 @@
+
+
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr align="center" class="table-warning">
+              <th scope="col">Tytuł</th>
+              <th scope="col">Autor</th>
+              <th scope="col">Data publikacji</th>
+              <th scope="col">Numer ISBN</th>
+              <th scope="col">Liczba stron</th>
+              <th scope="col">Link do okładki</th>
+              <th scope="col">Język publikacji</th>
+              <th scope="col">Edycja</th>
+              <th scope="col">Usuń pozycję</th>
+            </tr>
+          </thead>
+
+          <tbody>
+          {% for book in book_list %}
+            <tr align="center">
+              <td>{{ book.tytuł|title }}</td>
+              <td>{{ book.autor.nazwisko|title }}</td>
+              <td>{{ book.data_publikacji|date:"d/m/Y" }}</td>
+              <td>{{ book.numer_isbn }}</td>
+              <td>{{ book.liczba_stron }}</td>
+              <td><a href = "{{ book.link_do_okładki }}">Link</a></td>
+              <td>{{ book.język_publikacji }}</td>
+              <td><a href = "{% url 'update' book.id %}" class="btn btn-warning btn-sm">Edytuj</a></td>
+              <td><button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cxModal_{{book.id}}">Usuń</button><td>
+                  <!-- Modal -->
+              <div class="modal fade" id="cxModal_{{book.id}}" tabindex="-1" aria-labelledby="cxModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Czy na pewno chcesz usunąć pozycję o tytule "{{ book.tytuł|title }}"?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">NIE</button>
+                      <a href = "{% url 'delete' book.id %}" class="btn btn-danger btn-sm">TAK</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>

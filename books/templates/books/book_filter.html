@@ -4,43 +4,47 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <meta charset="utf-8">
-    <title>LIST</title>
+    <title>SHOW</title>
   </head>
 
   <body>
 
-    <div class="container">
-      <div class="row mb-4">
-        <div class="col-md-8">
-          <a href = "{% url 'index' %}" class="btn btn-warning mb-4">Strona główna</a>
-        </div>
-        <div class="col-md-4">
-            {% for message in messages %}
-            <div class="alert {{ message.tags }} alert-dismissible py-2 text-end" role="alert">
-                <span class="fst-italic">{{ message }}</span>
-            </div>
-            {% endfor %}
-        </div>
-      </div>
+  {% load my_tags %}
 
-      <h4 class="mb-4">Lista książek ({{ page_obj.paginator.count }}):</h4>
+    <div class="container">
+
+      <a href = "{% url 'index' %}" class="btn btn-warning mb-4">Strona główna</a>
+
+      <h4 class="mb-4">Wyszukaj książki:</h4>
+
+      <form action = "" method = "GET">
+        <table class='table' style="max-width: 30rem;">
+          {{ filter.form.as_table }}
+        </table>
+        <button type="submit" class="btn btn-warning mb-4">Wyszukaj</button>
+      </form>
+
+
+      <h4 class="mb-4 mt-4">Lista wyszukanych książek ({{ filter.qs.count }}):</h4>
       {% include "books/table.html" %}
 
       {% if is_paginated %}
       <div class="pagination justify-content-center my-5">
         <span class="page-links">
             {% if page_obj.has_previous %}
-              <a href="{% url 'list' %}?page={{ page_obj.previous_page_number }}">Poprzednia strona</a>
+              <a href="?{% param_replace page=page_obj.previous_page_number %}">Poprzednia strona</a>
             {% endif %}
             <span class="page-current">
             Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
             </span>
             {% if page_obj.has_next %}
-              <a href="{% url 'list' %}?page={{ page_obj.next_page_number }}">Następna strona</a>
+              <a href="?{% param_replace page=page_obj.next_page_number %}">Następna strona</a>
             {% endif %}
         </span>
       </div>
       {% endif %}
+
+
 
     </div>
 

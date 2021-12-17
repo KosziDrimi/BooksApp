@@ -10,7 +10,7 @@ class DateInput(forms.DateInput):
     
 class BookFilter(FilterSet):
     title = CharFilter(field_name='tytuł', lookup_expr='icontains', label='Tytuł')
-    author = CharFilter(field_name='autor', lookup_expr='icontains', label='Autor')
+    author = CharFilter(field_name='autor__nazwisko', lookup_expr='icontains', label='Autor')
     start_date = DateFilter(field_name='data_publikacji', lookup_expr='gte',
                             label='Data początkowa', widget=DateInput())
     end_date = DateFilter(field_name='data_publikacji', lookup_expr='lte',
@@ -18,4 +18,4 @@ class BookFilter(FilterSet):
     
     class Meta:
         model = Book
-        fields = ['język_publikacji']
+        fields = ['język_publikacji', 'numer_isbn']
