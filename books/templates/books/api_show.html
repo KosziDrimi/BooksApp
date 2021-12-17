@@ -11,38 +11,10 @@
 
     <div class="container">
 
-      <a href = "{% url 'index' %}" class="btn btn-warning">Strona główna</a><br>
-      <br>
-      <h4>Lista zaimportowanych pozycji:</h4>
-      <br>
-      <table class='table table-sm' style="max-width: 100rem;">
-        <tr align="center" class="table-warning">
-          <th> Tytuł </th>
-          <th> Autor </th>
-          <th> Data publikacji </th>
-          <th> Numer ISBN </th>
-          <th> Liczba stron </th>
-          <th> Link do okładki </th>
-          <th> Język publikacji </th>
-          <th> Edycja </th>
-          <th> Usuń pozycję </th>
-        </tr>
+      <a href = "{% url 'index' %}" class="btn btn-warning mb-4">Strona główna</a><br>
 
-        {% for book in books %}
-          <tr align="center">
-            <td>{{ book.tytuł }}</td>
-            <td>{{ book.autor }}</td>
-            <td>{{ book.data_publikacji|date:"d/m/Y" }}</td>
-            <td>{{ book.numer_isbn }}</td>
-            <td>{{ book.liczba_stron }}</td>
-            <td><a href = "{{ book.link_do_okładki }}">{{ book.link_do_okładki }}</a></td>
-            <td>{{ book.język_publikacji }}</td>
-            <td><a href = "{% url 'update' book.id %}" class="btn btn-warning">Edytuj</a><td>
-            <td><a href = "{% url 'delete' book.id %}" class="btn btn-danger">Usuń</a><td>
-          </tr>
-        {% endfor %}
-
-      </table>
+      <h4 class="mb-4">Lista zaimportowanych pozycji ({{ book_list|length }}):</h4>
+      {% include "books/table.html" %}
 
     </div>
 

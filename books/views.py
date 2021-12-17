@@ -99,7 +99,7 @@ def delete(request, pk):
 
 
 def api_import(request):
-    url = 'https://www.googleapis.com/books/v1/volumes?q={}&key={}'
+    url = 'https://www.googleapis.com/books/v1/volumes?startIndex=0&maxResults=40&q={}&key={}'
     api_key = API_KEY
 
     if request.method == 'POST':
@@ -111,59 +111,50 @@ def api_import(request):
 
             books = []
             data = r['items']
+
             for item in data:
-                i = {}
-                i['tytuł'] = item['volumeInfo']['title']
-                i['język_publikacji'] = item['volumeInfo']['language']
-
-                if 'authors' in item['volumeInfo']:
-                    i['autor'] = item['volumeInfo']['authors'][0]
-                else:
-                    i['autor'] = 'brak danych'
-
-                if 'pageCount' in item['volumeInfo']:
-                    i['liczba_stron'] = item['volumeInfo']['pageCount']
-                else:
-                    i['liczba_stron'] = 0
-
-                if 'industryIdentifiers' in item['volumeInfo']:
-                    i['numer_isbn'] = (item['volumeInfo']
-                                           ['industryIdentifiers'][0]
-                                           ['identifier'])
-                else:
-                    i['numer_isbn'] = 'brak danych'
-
-                if 'imageLinks' in item['volumeInfo']:
-                    i['link_do_okładki'] = (item['volumeInfo']['imageLinks']
-                                                ['thumbnail'])
-                else:
-                    i['link_do_okładki'] = 'brak danych'
+                tytuł = item['volumeInfo']['title']
+                język_publikacji = item['volumeInfo']['language']
+                autor = (item['volumeInfo']['authors'][0] if 'authors' in item['volumeInfo'] else 'brak danych')
+                liczba_stron = (item['volumeInfo']['pageCount'] if 'pageCount' in item['volumeInfo'] else 0)
+                numer_isbn = (item['volumeInfo']['industryIdentifiers'][0]['identifier'] if 'industryIdentifiers'
+                                in item['volumeInfo'] else 'brak daych')
+                link_do_okładki = (item['volumeInfo']['imageLinks']['thumbnail'] if 'imageLinks' in item['volumeInfo']
+                                    else 'brak danych')
 
                 if 'publishedDate' in item['volumeInfo']:
-                    i['data_publikacji'] = item['volumeInfo']['publishedDate']
+                    data_publikacji = item['volumeInfo']['publishedDate']
                 else:
                     continue
 
-                if len(i['data_publikacji']) == 4:
-                    i['data_publikacji'] = datetime.strptime(
-                                        i['data_publikacji'], "%Y").date()
-                elif len(i['data_publikacji']) == 7:
-                    i['data_publikacji'] = datetime.strptime(
-                                        i['data_publikacji'], "%Y-%m").date()
-                else:
-                    i['data_publikacji'] = i['data_publikacji']
+                if len(data_publikacji) == 4:
+                    try:
+                        data_publikacji = datetime.strptime(data_publikacji, "%Y").date()
+                    except ValueError:
+                        continue
+                elif len(data_publikacji) == 7:
+                    data_publikacji = datetime.strptime(data_publikacji, "%Y-%m").date()
 
-                book = Book(tytuł=i['tytuł'], autor=i['autor'],
-                            data_publikacji=i['data_publikacji'],
-                            numer_isbn=i['numer_isbn'],
-                            liczba_stron=i['liczba_stron'],
-                            link_do_okładki=i['link_do_okładki'],
-                            język_publikacji=i['język_publikacji'])
+                try:
+                    Autor.objects.filter(nazwisko__iexact=autor).get()
+                except ObjectDoesNotExist:
+                    author = Autor(nazwisko=autor)
+                    author.save()
 
-                book.save()
-                books.append(book)
+                try:
+                    Book.objects.filter(numer_isbn=numer_isbn).get()
+                except ObjectDoesNotExist:
+                    book = Book(tytuł=tytuł,
+                                autor=Autor.objects.filter(nazwisko__iexact=autor).get(),
+                                data_publikacji=data_publikacji,
+                                numer_isbn=numer_isbn,
+                                liczba_stron=liczba_stron,
+                                link_do_okładki=link_do_okładki,
+                                język_publikacji=język_publikacji)
+                    book.save()
+                    books.append(book)
 
-            context = {'books': books}
+            context = {'book_list': books}
             return render(request, 'books/api_show.html', context)
 
     else:
