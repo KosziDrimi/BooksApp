@@ -11,7 +11,7 @@
 
     <div class="container">
 
-      <a href = "{% url 'index' %}" class="btn btn-warning mb-4">Strona główna</a><br>
+      <a href = "{% url 'index' %}" class="btn btn-warning mb-4">Strona główna</a>
 
       <h4 class="mb-4">Lista zaimportowanych pozycji ({{ book_list|length }}):</h4>
       {% include "books/table.html" %}

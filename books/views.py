@@ -11,7 +11,7 @@ from datetime import datetime
 from .models import Autor, Book
 from .forms import AutorForm, BookForm, APIForm
 from .filters import BookFilter
-from .serializers import BookSerializer
+from .serializers import AutorSerializer, BookSerializer
 from myproject.settings import API_KEY
 
 
@@ -29,6 +29,11 @@ class BookFilterView(FilterView):
     ordering = ['-id']
     filterset_class = BookFilter
     paginate_by = 5
+
+
+class AutorView(viewsets.ModelViewSet):
+    queryset = Autor.objects.all()
+    serializer_class = AutorSerializer
 
 
 class BookView(viewsets.ModelViewSet):

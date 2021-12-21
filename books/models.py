@@ -4,6 +4,9 @@ from django.db import models
 class Autor(models.Model):
     nazwisko = models.CharField(max_length=30, verbose_name='Autor')
 
+    def __str__(self):
+        return self.nazwisko
+
 
 class Book(models.Model):
     tytuł = models.CharField(max_length=50)

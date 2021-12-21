@@ -1,11 +1,15 @@
 from rest_framework import serializers
 
-from .models import Book
+from .models import Autor, Book
+
+
+class AutorSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Autor
+        fields = '__all__'
 
 
 class BookSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Book
-        fields = ('id', 'url', 'tytuł', 'autor', 'data_publikacji',
-                  'numer_isbn', 'liczba_stron', 'link_do_okładki',
-                  'język_publikacji')
+        fields = '__all__'

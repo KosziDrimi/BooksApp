@@ -7,6 +7,7 @@ from .views import BookList, BookFilterView
 
 router = routers.DefaultRouter()
 router.register('books', views.BookView)
+router.register('authors', views.AutorView)
 
 
 urlpatterns = [
