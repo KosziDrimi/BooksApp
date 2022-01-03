@@ -68,6 +68,7 @@ def add(request):
             except ObjectDoesNotExist:
                 book = Book(**data)
                 book.save()
+                messages.warning(request, "Pozycja dodana do bazy.")
 
             return redirect('list')
 
