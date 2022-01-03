@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <title>BooksApp</title>
+  </head>
+
+  <body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 fw-bold">
+                <li class="nav-item">
+                    <a href="{% url 'index' %}" class="nav-link">Strona główna</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'add' %}" class="nav-link">Dodaj pozycję</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'show' %}" class="nav-link">Wyszukaj pozycję</a>
+                </li>
+                <li class="nav-item">
+                   <a href="{% url 'list' %}" class="nav-link">Zobacz listę książek</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'api_import' %}" class="nav-link">Zaimportuj pozycje z API</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        {% block content %}
+
+        {% endblock %}
+
+    </div>
+
+  </body>
+</html>
