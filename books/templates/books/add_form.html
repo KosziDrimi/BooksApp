@@ -9,20 +9,56 @@
 
   <body>
 
+  {% load crispy_forms_tags %}
+
+
     <div class="container">
 
-      <a href = "{% url 'index' %}" class="btn btn-warning">Strona główna</a><br>
-      <br>
-      <h4>Dodaj książkę / modyfikuj dane:</h4>
-      <br>
-      <form action = "" method = "POST">
-        {% csrf_token %}
-        <table class='table' style="max-width: 40rem;">
-          {{ autor_form.as_table }}
-          {{ book_form.as_table }}
-        </table>
-        <button type="submit" class="btn btn-warning">Zapisz</button>
-      </form>
+      <a href = "{% url 'index' %}" class="btn btn-warning mb-4">Strona główna</a>
+
+      <h4 class="mb-4">Dodaj książkę / modyfikuj dane:</h4>
+
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card border-warning mb-4">
+            <div class="card-header fw-bold">Wprowadź dane nowej pozycji:</div>
+            <div class="card-body">
+              <form action="" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-2">
+                      {{ autor_form|crispy }}
+                    </div>
+                    <div class="mb-3">
+                      {{ book_form.tytuł|as_crispy_field }}
+                    </div>
+                    <div>
+                      {{ book_form.data_publikacji|as_crispy_field }}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      {{ book_form.numer_isbn|as_crispy_field }}
+                    </div>
+                    <div class="mb-3">
+                      {{ book_form.liczba_stron|as_crispy_field }}
+                    </div>
+                    <div class="mb-3">
+                      {{ book_form.link_do_okładki|as_crispy_field }}
+                    </div>
+                    <div class="mb-4">
+                      {{ book_form.język_publikacji|as_crispy_field }}
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <button type="submit" class="btn btn-warning">Zapisz</button>
+          </div>
+        </div>
+      </div>
+
 
     </div>
 

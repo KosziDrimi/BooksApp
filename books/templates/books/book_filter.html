@@ -10,6 +10,7 @@
   <body>
 
   {% load my_tags %}
+  {% load crispy_forms_tags %}
 
     <div class="container">
 
@@ -17,12 +18,42 @@
 
       <h4 class="mb-4">Wyszukaj książki:</h4>
 
-      <form action = "" method = "GET">
-        <table class='table' style="max-width: 30rem;">
-          {{ filter.form.as_table }}
-        </table>
-        <button type="submit" class="btn btn-warning mb-4">Wyszukaj</button>
-      </form>
+      <div class="card border-warning mb-4">
+        <form action="" method="GET">
+          <div class="card-header fw-bold">Wprowadź filtry do wyszukiwania:</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                  {{ filter.form.title|as_crispy_field }}
+                </div>
+                <div>
+                  {{ filter.form.author|as_crispy_field }}
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  {{ filter.form.język_publikacji|as_crispy_field }}
+                </div>
+                <div>
+                  {{ filter.form.numer_isbn|as_crispy_field }}
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  {{ filter.form.start_date|as_crispy_field }}
+                </div>
+                <div>
+                {{ filter.form.end_date|as_crispy_field }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer text-center">
+            <button type="submit" class="btn btn-warning">Wyszukaj</button>
+          </div>
+        </form>
+      </div>
 
 
       <h4 class="mb-4 mt-4">Lista wyszukanych książek ({{ filter.qs.count }}):</h4>

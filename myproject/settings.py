@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'books',
     'rest_framework',
     'django_filters',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -146,6 +147,7 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
  }
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 import django_on_heroku
 django_on_heroku.settings(locals())

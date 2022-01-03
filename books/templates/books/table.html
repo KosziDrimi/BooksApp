@@ -27,7 +27,7 @@
               <td><a href = "{{ book.link_do_okładki }}">Link</a></td>
               <td>{{ book.język_publikacji }}</td>
               <td><a href = "{% url 'update' book.id %}" class="btn btn-warning btn-sm">Edytuj</a></td>
-              <td><button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cxModal_{{book.id}}">Usuń</button><td>
+              <td><button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cxModal_{{book.id}}">Usuń</button></td>
                   <!-- Modal -->
               <div class="modal fade" id="cxModal_{{book.id}}" tabindex="-1" aria-labelledby="cxModalLabel" aria-hidden="true">
                 <div class="modal-dialog">

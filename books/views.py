@@ -28,7 +28,7 @@ class BookFilterView(FilterView):
     template_name = 'books/book_filter.html'
     ordering = ['-id']
     filterset_class = BookFilter
-    paginate_by = 5
+    paginate_by = 6
 
 
 class AutorView(viewsets.ModelViewSet):
