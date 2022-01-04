@@ -89,7 +89,7 @@ def update(request, pk):
         autor_form = AutorForm(request.POST, instance=book.autor)
         form = BookForm(request.POST, instance=book)
 
-        if form.is_valid() or autor_form.is_valid():
+        if form.is_valid() and autor_form.is_valid():
             form.save()
             autor_form.save()
             return redirect('list')
