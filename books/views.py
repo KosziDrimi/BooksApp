@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
+from django.forms import modelformset_factory
 from rest_framework import viewsets
 from django_filters.views import FilterView
 from django_filters.rest_framework import DjangoFilterBackend
@@ -48,35 +49,42 @@ def index(request):
 
 
 def add(request):
-    if request.method == 'POST':
-        autor_form = AutorForm(request.POST)
-        book_form = BookForm(request.POST)
+    AutorFormSet = modelformset_factory(Autor, form=AutorForm, extra=1, min_num=1, validate_min=True)
 
-        if autor_form.is_valid() and book_form.is_valid():
-            autor = autor_form.cleaned_data['nazwisko']
-            try:
-                nazwisko = Autor.objects.filter(nazwisko__iexact=autor).get()
-            except ObjectDoesNotExist:
-                autor_form.save()
-                nazwisko = Autor.objects.last()
+    if request.method == 'POST':
+        book_form = BookForm(request.POST)
+        autor_formset = AutorFormSet(request.POST)
+
+        if autor_formset.is_valid() and book_form.is_valid():
+
+            for form in autor_formset.cleaned_data:
+                if len(form) > 0:
+                    name = form['nazwisko']
+
+                    try:
+                        nazwisko = Autor.objects.filter(nazwisko__iexact=name).get()
+                    except ObjectDoesNotExist:
+                        autor = Autor(nazwisko=name)
+                        autor.save()
+                        nazwisko = Autor.objects.last()
 
             data = book_form.cleaned_data
             data['autor'] = nazwisko
             try:
                 Book.objects.filter(numer_isbn=data['numer_isbn']).get()
-                messages.warning(request, "Pozycja o tym numerze ISBN już widnieje w bazie.")
+                messages.warning(request, 'Pozycja o tym numerze ISBN już widnieje w bazie.')
             except ObjectDoesNotExist:
                 book = Book(**data)
                 book.save()
-                messages.warning(request, "Pozycja dodana do bazy.")
+                messages.warning(request, 'Pozycja dodana do bazy.')
 
             return redirect('list')
 
     else:
-        autor_form = AutorForm()
+        autor_formset = AutorFormSet(queryset=Autor.objects.none())
         book_form = BookForm()
 
-    context = {'autor_form': autor_form, 'book_form': book_form}
+    context = {'autor_form': autor_formset, 'book_form': book_form}
     return render(request, 'books/add_form.html', context)
 
 
@@ -105,7 +113,7 @@ def delete(request, pk):
 
 
 def api_import(request):
-    url = 'https://www.googleapis.com/books/v1/volumes?startIndex=0&maxResults=40&q={}&key={}'
+    url = 'https://www.googleapis.com/books/v1/volumes?startIndex=0&maxResults=20&q={}&key={}'
     api_key = API_KEY
 
     if request.method == 'POST':
@@ -124,7 +132,7 @@ def api_import(request):
                 autor = (item['volumeInfo']['authors'][0] if 'authors' in item['volumeInfo'] else 'brak danych')
                 liczba_stron = (item['volumeInfo']['pageCount'] if 'pageCount' in item['volumeInfo'] else 0)
                 numer_isbn = (item['volumeInfo']['industryIdentifiers'][0]['identifier'] if 'industryIdentifiers'
-                                in item['volumeInfo'] else 'brak daych')
+                                in item['volumeInfo'] else 'brak danych')
                 link_do_okładki = (item['volumeInfo']['imageLinks']['thumbnail'] if 'imageLinks' in item['volumeInfo']
                                     else 'brak danych')
 
