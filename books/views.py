@@ -131,7 +131,7 @@ def delete(request, pk):
 
 
 def api_import(request):
-    url = 'https://www.googleapis.com/books/v1/volumes?startIndex=0&maxResults=20&q={}&key={}'
+    url = 'https://www.googleapis.com/books/v1/volumes?startIndex=0&maxResults=6&q={}&key={}'
     api_key = API_KEY
 
     if request.method == 'POST':
@@ -147,7 +147,12 @@ def api_import(request):
             for item in data:
                 tytuł = item['volumeInfo']['title']
                 język_publikacji = item['volumeInfo']['language']
-                autor = (item['volumeInfo']['authors'][0] if 'authors' in item['volumeInfo'] else 'brak danych')
+
+                if 'authors' in item['volumeInfo']:
+                    authors = [author for author in item['volumeInfo']['authors']]
+                else:
+                    authors = ['brak danych']
+
                 liczba_stron = (item['volumeInfo']['pageCount'] if 'pageCount' in item['volumeInfo'] else 0)
                 numer_isbn = (item['volumeInfo']['industryIdentifiers'][0]['identifier'] if 'industryIdentifiers'
                                 in item['volumeInfo'] else 'brak danych')
@@ -168,23 +173,26 @@ def api_import(request):
                     data_publikacji = datetime.strptime(data_publikacji, "%Y-%m").date()
 
                 try:
-                    Autor.objects.filter(nazwisko__iexact=autor).get()
-                except ObjectDoesNotExist:
-                    author = Autor(nazwisko=autor)
-                    author.save()
-
-                try:
                     Book.objects.filter(numer_isbn=numer_isbn).get()
                 except ObjectDoesNotExist:
                     book = Book(tytuł=tytuł,
-                                autor=Autor.objects.filter(nazwisko__iexact=autor).get(),
                                 data_publikacji=data_publikacji,
                                 numer_isbn=numer_isbn,
                                 liczba_stron=liczba_stron,
                                 link_do_okładki=link_do_okładki,
                                 język_publikacji=język_publikacji)
                     book.save()
-                    books.append(book)
+
+                for author in authors:
+                    try:
+                        autor = Autor.objects.filter(nazwisko__iexact=author).get()
+                    except ObjectDoesNotExist:
+                        autor = Autor(nazwisko=author)
+                        autor.save()
+                    finally:
+                        autor.books.add(book)
+
+                books.append(book)
 
             context = {'book_list': books}
             return render(request, 'books/api_show.html', context)
