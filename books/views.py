@@ -90,19 +90,37 @@ def add(request):
 
 def update(request, pk):
     book = Book.objects.get(id=pk)
-    autor_form = AutorForm(instance=book.autor)
+    AutorFormSet = modelformset_factory(Autor, form=AutorForm, extra=1, min_num=1, validate_min=True)
+    authors = Autor.objects.filter(books__id=pk)
+    autor_formset = AutorFormSet(queryset=authors)
     form = BookForm(instance=book)
 
     if request.method == 'POST':
-        autor_form = AutorForm(request.POST, instance=book.autor)
+        autor_formset = AutorFormSet(request.POST, queryset=Autor.objects.filter(books__id=pk))
         form = BookForm(request.POST, instance=book)
 
-        if form.is_valid() and autor_form.is_valid():
+        if form.is_valid() and autor_formset.is_valid():
             form.save()
-            autor_form.save()
+
+            for author in authors:
+                book.autor_set.remove(author)
+
+            for form in autor_formset.cleaned_data:
+                if len(form) > 0:
+                    name = form['nazwisko']
+
+                    try:
+                        autor = Autor.objects.filter(nazwisko__iexact=name).get()
+                    except ObjectDoesNotExist:
+                        autor = Autor(nazwisko=name)
+                        autor.save()
+                    finally:
+                        autor.books.add(book)
+
+            messages.warning(request, 'Pozycja zaktualizowana.')
             return redirect('list')
 
-    context = {'book_form': form, 'autor_form': autor_form}
+    context = {'book_form': form, 'autor_form': autor_formset}
     return render(request, 'books/add_form.html', context)
 
 
