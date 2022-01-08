@@ -20,7 +20,9 @@
           {% for book in book_list %}
             <tr align="center">
               <td>{{ book.tytuł|title }}</td>
-              <td>{{ book.autor.nazwisko|title }}</td>
+              <td>{% for author in book.autor_set.all %}
+                      {{ author|title|linebreaks }}
+                  {% endfor %}</td>
               <td>{{ book.data_publikacji|date:"d/m/Y" }}</td>
               <td>{{ book.numer_isbn }}</td>
               <td>{{ book.liczba_stron }}</td>

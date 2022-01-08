@@ -57,26 +57,26 @@ def add(request):
 
         if autor_formset.is_valid() and book_form.is_valid():
 
-            for form in autor_formset.cleaned_data:
-                if len(form) > 0:
-                    name = form['nazwisko']
-
-                    try:
-                        nazwisko = Autor.objects.filter(nazwisko__iexact=name).get()
-                    except ObjectDoesNotExist:
-                        autor = Autor(nazwisko=name)
-                        autor.save()
-                        nazwisko = Autor.objects.last()
-
             data = book_form.cleaned_data
-            data['autor'] = nazwisko
             try:
-                Book.objects.filter(numer_isbn=data['numer_isbn']).get()
+                book = Book.objects.filter(numer_isbn=data['numer_isbn']).get()
                 messages.warning(request, 'Pozycja o tym numerze ISBN już widnieje w bazie.')
             except ObjectDoesNotExist:
                 book = Book(**data)
                 book.save()
                 messages.warning(request, 'Pozycja dodana do bazy.')
+
+            for form in autor_formset.cleaned_data:
+                if len(form) > 0:
+                    name = form['nazwisko']
+
+                    try:
+                        autor = Autor.objects.filter(nazwisko__iexact=name).get()
+                    except ObjectDoesNotExist:
+                        autor = Autor(nazwisko=name)
+                        autor.save()
+                    finally:
+                        autor.books.add(book)
 
             return redirect('list')
 

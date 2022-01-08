@@ -19,7 +19,7 @@ def is_not_digit(char):
 class AutorForm(forms.ModelForm):
     class Meta:
         model = Autor
-        fields = '__all__'
+        fields = ['nazwisko']
 
     def clean_nazwisko(self):
         data = self.cleaned_data.get('nazwisko')
